@@ -1,1 +1,3 @@
-# js-tetris
+## js-tetris
+
+not completed
