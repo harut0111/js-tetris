@@ -12,11 +12,11 @@
     position: relative;
     top: 50px;
     width: 60%;
+    padding: 10px;
     height: auto;
     border: 2px dotted rgb(0, 255, 0);
     margin: auto;
     color: rgb(0, 255, 0);
-  
 }
 
 #myCanvas {
