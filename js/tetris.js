@@ -43,13 +43,13 @@ drawBoard();
 
 //Piece Class
 class Piece {
-    constructor(tetromino, color) {
+    constructor(tetromino = [], color) {
         this.tetromino = tetromino;
         this.tetrominoN = 0;
         this.activeTetromino = this.tetromino[this.tetrominoN];
         this.color = color;
         this.x = 3;
-        this.y = 0;
+        this.y = 2;
 
     }
 
@@ -97,9 +97,10 @@ class Piece {
     }
 
     // rotate the piece
-    moveLeft() {
+    rotate() {
         this.unDraw();
-        this.tetrominoN = (this.tetrominoN + 1);
+        this.tetrominoN = (this.tetrominoN + 1) % this.tetromino.length;
+        this.activeTetromino = this.tetromino[this.tetrominoN];
         this.draw();
     }
 
@@ -107,6 +108,8 @@ class Piece {
 
 
 }
+
+
 const PIECES = [
     [Z, 'red'],
     [S, 'green'],
@@ -118,8 +121,33 @@ const PIECES = [
 ];
 
 let p = new Piece(PIECES[0][0], PIECES[0][1]);
-
 p.draw();
+
+
+
+
+// control the piece
+
+document.addEventListener('keydown', control);
+
+
+function control(event) {
+
+    switch(event.keyCode) {
+        case 37: 
+            p.moveLeft();
+            break;
+        case 38:
+            p.rotate();
+            break;
+        case 39:
+            p.moveRight();
+            break;
+        case 40:
+            p.moveDown();
+    }
+
+} 
 
 
 // drop the piece every second
@@ -128,5 +156,3 @@ function drop() {
     setTimeout(drop, 1000);
 }
 
-
-drop();
