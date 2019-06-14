@@ -9,7 +9,7 @@ const SQ = squareSize = 20;
 const VACANT = 'white';
 
 
-// DR
+// draw a th square
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * SQ, y * SQ, SQ, SQ);
@@ -53,7 +53,6 @@ class Piece {
 
     }
 
-
     //fill method
     fill(color) {
         for (let r = 0; r < this.activeTetromino.length; r++) {
@@ -77,39 +76,81 @@ class Piece {
 
     // move down the piece
     moveDown() {
-        this.unDraw();
-        this.y++;
-        this.draw();
+        if (!this.collision(0, 1, this.activeTetromino)) {
+            this.unDraw();
+            this.y++;
+            this.draw();
+        } else {
+            // we lock the piece and generate a new one
+        }
     }
 
     // move right the piece
     moveRight() {
-        this.unDraw();
-        this.x++;
-        this.draw();
+        if (!this.collision(1, 0, this.activeTetromino)) {
+            this.unDraw();
+            this.x++;
+            this.draw();
+        }
     }
 
     // move left the piece
     moveLeft() {
-        this.unDraw();
-        this.x--;
-        this.draw();
+        if (!this.collision(-1, 0, this.activeTetromino)) {
+            this.unDraw();
+            this.x--;
+            this.draw();
+        }
     }
 
     // rotate the piece
     rotate() {
-        this.unDraw();
-        this.tetrominoN = (this.tetrominoN + 1) % this.tetromino.length;
-        this.activeTetromino = this.tetromino[this.tetrominoN];
-        this.draw();
+        let nextPattern = this.tetromino[(this.tetrominoN + 1) % this.tetromino.length];
+        if (!this.collision(0, 0, nextPattern)) {
+            this.unDraw();
+            this.tetrominoN = (this.tetrominoN + 1) % this.tetromino.length;
+            this.activeTetromino = this.tetromino[this.tetrominoN];
+            this.draw();
+        }
+    }
+
+    collision(x, y, piece) {
+
+        for (let r = 0; r < piece.length; r++) {
+            for (let c = 0; c < piece.length; c++) {
+
+                if (!piece[r][c]) {
+                    continue;
+                }
+                // coordinates of the piece after movement
+                let newX = this.x + c + x;
+                let newY = this.y + c + y;
+
+                // conditions for borders
+               
+                if (newX < 0 || newX >= COLUMN || newY >= ROW) {
+                    return true;
+                }
+
+                if (newY < 0) {
+                    continue;
+                }
+                // check if there is a locked piece already in piece
+                if (board[newY][newX] != VACANT) {
+                    return true;
+                }
+            }   
+        }
+        return false;
     }
 
 
 
 
+    // class end
 }
 
-
+// the pieces wth their colors
 const PIECES = [
     [Z, 'red'],
     [S, 'green'],
@@ -155,4 +196,5 @@ function drop() {
     p.moveDown();
     setTimeout(drop, 1000);
 }
+/* drop(); */
 
