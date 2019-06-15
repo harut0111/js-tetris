@@ -9,11 +9,23 @@
 </head>
 <body>
     <div id="container">
- 
-        <canvas id="myCanvas" width="200" height="400">
-            Your browser does not support the HTML5 canvas tag.
-        </canvas>
-
+        <h1>Tetris</h1>
+        <div id="canvCont">
+            <canvas id="myCanvas" width="200" height="400">
+                Your browser does not support the HTML5 canvas tag.
+            </canvas>
+        </div>
+        <div id = "btnAndScore">   
+            <div id="btnCont">
+                <button id="play">Play</button>
+                <button id="pause">Pause</button>
+                <button id="newGame">New Game</button>
+            </div>
+            <div id="scrCont">
+                Score:
+                <div id="score">0</div>
+            </div>
+        </div>
     </div>
     <script src="js/tetrominoes.js"></script>
     <script src="js/tetris.js"></script>

@@ -3,26 +3,31 @@
 let cvs = document.getElementById('myCanvas');
 let ctx = cvs.getContext('2d');
 
+
 const ROW = 20;
 const COLUMN = 10;
 const SQ = squareSize = 20;
-const VACANT = 'white';
+const VACANT = 'black';
+
+const scoreElement = document.getElementById("score");
+const playButton = document.getElementById("play");
+const pauseButton = document.getElementById("pause");
+const newGameButton = document.getElementById("newGame");
+
+let score = 0;
 
 
 // draw a th square
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * SQ, y * SQ, SQ, SQ);
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
     ctx.strokeRect(x * SQ, y * SQ, SQ, SQ);
 }
 
-
-
-
+// create the board
 let board = [];
 
-// create the board
 for(let r = 0; r < ROW; r++) {
     board[r] = [];
     for (let c = 0; c < COLUMN; c++) {
@@ -31,6 +36,8 @@ for(let r = 0; r < ROW; r++) {
 }
 
 //draw the board
+drawBoard();
+
 function drawBoard() {
     for (let r = 0; r < ROW; r++) {
         for (let c = 0; c < COLUMN; c++) {
@@ -38,7 +45,7 @@ function drawBoard() {
         }    
     }
 }
-drawBoard();
+
 
 
 //Piece Class
@@ -49,14 +56,14 @@ class Piece {
         this.activeTetromino = this.tetromino[this.tetrominoN];
         this.color = color;
         this.x = 3;
-        this.y = 2;
-
+        this.y = -1;
     }
 
     //fill method
     fill(color) {
         for (let r = 0; r < this.activeTetromino.length; r++) {
             for (let c = 0; c < this.activeTetromino.length; c++) {
+                // draw only squares with value "1"
                 if (this.activeTetromino[r][c]) {
                     drawSquare(this.x + c, this.y + r, color) ;
                 }               
@@ -81,7 +88,9 @@ class Piece {
             this.y++;
             this.draw();
         } else {
-            // we lock the piece and generate a new one
+            // lock the piece and generate a new one
+            this.lock();
+            p = randomPiece();
         }
     }
 
@@ -106,14 +115,27 @@ class Piece {
     // rotate the piece
     rotate() {
         let nextPattern = this.tetromino[(this.tetrominoN + 1) % this.tetromino.length];
-        if (!this.collision(0, 0, nextPattern)) {
+        let kick = 0;
+        if(this.collision(0, 0, nextPattern)) {
+            if (this.x > COLUMN / 2) {
+                // it's the right wall
+                kick = -1; 
+            } else {
+                // it's the left wall
+                kick = 1;
+            }
+        }
+
+        if (!this.collision(kick, 0, nextPattern)) {
             this.unDraw();
+            this.x += kick;
             this.tetrominoN = (this.tetrominoN + 1) % this.tetromino.length;
             this.activeTetromino = this.tetromino[this.tetrominoN];
             this.draw();
         }
     }
 
+    // check the cllision
     collision(x, y, piece) {
 
         for (let r = 0; r < piece.length; r++) {
@@ -124,7 +146,7 @@ class Piece {
                 }
                 // coordinates of the piece after movement
                 let newX = this.x + c + x;
-                let newY = this.y + c + y;
+                let newY = this.y + r + y;
 
                 // conditions for borders
                
@@ -144,8 +166,51 @@ class Piece {
         return false;
     }
 
+    // lock the pieces
+    lock() {
+        for (let r = 0; r < this.activeTetromino.length; r++) {
+            for (let c = 0; c < this.activeTetromino.length; c++) {
+                // skicp teh vacat squares
+                if (!this.activeTetromino[r][c]) {
+                    continue;
+                }
+                // pieces to lock on top means game over
+                if(this.y + r < 0) {
+                    gameOver = true;
+                    alert("Game Over");
+                    break;
+                }
+                // lock the piece
+                board[this.y + r][this.x + c] = this.color;          
+            }             
+        }
+        // remove full rows
+        for (let r = 0; r < ROW; r++) {
+            let isRowFull = true;
+            for (let c = 0; c < COLUMN; c++) {
+                isRowFull = isRowFull && (board[r][c] != VACANT);  
+            }
+            if (isRowFull) {
+                // move down all the rows above it
+                for (let y = r; y > 1; y--) {
+                    for (let c = 0; c < COLUMN; c++) {
+                        board[y][c] = board[y-1][c]  
+                    }
+                }
+                // the top row board has no row above it
+                for (let c = 0; c < COLUMN; c++) {
+                    board[0][c] = VACANT;
+                }
+                // increment the score
+                score += 10;
+            }  
+        }
+        // update the board
+        drawBoard();
 
-
+        // update the score
+        scoreElement.innerHTML = score;
+    }
 
     // class end
 }
@@ -153,28 +218,66 @@ class Piece {
 // the pieces wth their colors
 const PIECES = [
     [Z, 'red'],
-    [S, 'green'],
-    [J, 'yellow'],
-    [T, 'blue'],
-    [L, 'purple'],
-    [I, 'cyan'],
-    [O, 'orange'],
+    [S, 'blue'],
+    [J, '#ff801a'],
+    [T, 'red'],
+    [L, 'blue'],
+    [I, '#ff801a'],
+    [O, 'red'],
 ];
 
-let p = new Piece(PIECES[0][0], PIECES[0][1]);
-p.draw();
+
+// generate random pieces
+let p = randomPiece();
+
+function randomPiece() {
+    let r = randomN = Math.floor(Math.random() * PIECES.length);
+    return new Piece(PIECES[r][0], PIECES[r][1]);
+}
 
 
+// play and pause game
+
+playButton.addEventListener('click', playPause);
+pauseButton.addEventListener('click', playPause);
+
+let id;
+let play = false;
+
+function playPause(ev) {
+    if (ev.target.innerHTML == 'Play') {
+        if (!play) {
+            drop();
+            play = true;
+        }
+    } else {
+        clearTimeout(id);
+        play = false;
+    }
+}
+
+// start new game
+newGameButton.addEventListener('click', () => document.location.reload());
+
+
+// drop the piece every second
+let gameOver = false;
+
+function drop() {  
+    p.moveDown();
+    if (!gameOver) {
+        id = setTimeout(drop, 1000);
+    }
+    
+}
 
 
 // control the piece
-
 document.addEventListener('keydown', control);
-
 
 function control(event) {
 
-    switch(event.keyCode) {
+    switch(event.which) {
         case 37: 
             p.moveLeft();
             break;
@@ -189,12 +292,4 @@ function control(event) {
     }
 
 } 
-
-
-// drop the piece every second
-function drop() {
-    p.moveDown();
-    setTimeout(drop, 1000);
-}
-/* drop(); */
 

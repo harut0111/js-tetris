@@ -5,23 +5,95 @@
     -moz-user-select: -moz-none;
     -ms-user-select: none;
     user-select: none;
+    background: black;
+    color: rgb(0, 255, 0);
 }
 
 /* container */
 #container {
     position: relative;
     top: 25px;
-    width: 60%;
+    width: fit-content;
     padding: 10px;
     height: auto;
     border: 4px dotted rgb(0, 255, 0);
     margin: auto;
-    color: rgb(0, 255, 0);
+    color: rgb(0, 255, 0); 
+    /* background-image: url("../img/Armenia.jpg") */
+    min-width: 550px;
 }
 
-#myCanvas {
-    /* width: 200px;
-    height: 100px; */
+#container::after{
+    content: '';
+    display: table;
+    clear: both;
+}
+
+canvas {
     color: rgb(0, 255, 0);
-    border: 1px dotted red;
+    border: 2px solid rgb(0, 255, 0);
+    display: inline-block;
+}
+
+
+#score {
+    display: inline-block;
+}
+
+#scrCont {
+    font-size: 25px;
+    font-family: monospace;
+}
+
+button {
+    padding: 10px;
+    border: 1px dotted rgb(0, 255, 0);
+    margin: 2px;
+}
+
+#btnAndScore {
+    position: relative;
+    border: 1px dashed rgb(0, 255, 0);
+    margin: 10px;
+    padding: 10px;
+    height: 200px;
+    display: inline-block;
+}
+
+#canvCont{
+    margin: 10px;
+    float: left;
+}
+
+#scrCont{
+    position: absolute;
+    bottom: 50px;
+    left: 60px;
+
+}
+
+h1 {
+    text-align: center;
+    border-bottom: 1px dotted rgb(0, 255, 0);
+    padding-bottom: 20px;
+  
+}
+
+#play{
+    background: red;
+}
+
+button {
+    color: white;
+    size: 15px;
+}
+
+#pause{
+    background: blue;
+}
+#pause{
+    background: blue;
+}
+#newGame{
+    background: #ff801a;
 }
