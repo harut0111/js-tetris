@@ -6,7 +6,7 @@ let ctx = cvs.getContext('2d');
 
 const ROW = 20;
 const COLUMN = 10;
-const SQ = squareSize = 20;
+const SQ = 20;
 const VACANT = 'black';
 
 const scoreElement = document.getElementById("score");
@@ -45,8 +45,6 @@ function drawBoard() {
         }    
     }
 }
-
-
 
 //Piece Class
 class Piece {
