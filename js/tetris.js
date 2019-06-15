@@ -175,7 +175,7 @@ class Piece {
                 // pieces to lock on top means game over
                 if(this.y + r < 0) {
                     gameOver = true;
-                    alert("թուուուուուու կրվեցիրրրր\nնորից փորձի");
+                    alert("թուուուուու կրվեցիրրրր\nնորից փորձի");
                     break;
                 }
                 // lock the piece
