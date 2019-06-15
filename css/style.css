@@ -49,6 +49,9 @@ button {
     padding: 10px;
     border: 1px dotted rgb(0, 255, 0);
     margin: 2px;
+    color: white;
+    size: 15px;
+    
 }
 
 #btnAndScore {
@@ -76,16 +79,12 @@ h1 {
     text-align: center;
     border-bottom: 1px dotted rgb(0, 255, 0);
     padding-bottom: 20px;
-  
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-style: italic;
 }
 
 #play{
     background: red;
-}
-
-button {
-    color: white;
-    size: 15px;
 }
 
 #pause{

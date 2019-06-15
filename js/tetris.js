@@ -243,7 +243,7 @@ let id;
 let play = false;
 
 function playPause(ev) {
-    if (ev.target.innerHTML == 'Play') {
+    if (ev.target.id == 'play') {
         if (!play) {
             drop();
             play = true;
